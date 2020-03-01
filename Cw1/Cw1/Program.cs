@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Cw1
@@ -8,13 +9,23 @@ namespace Cw1
     {
         static async Task Main(string[] args)
         {
-            //args[0] = "https://www.amazon.com";
-            Console.WriteLine("arg 0 = " + args[0]);
-
             var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(args[0]);
+            var response = await httpClient.GetAsync("https://www.pja.edu.pl");
 
-            Console.WriteLine(response);
+            //Console.WriteLine(response);
+
+            if (response.IsSuccessStatusCode) {
+                string html = await response.Content.ReadAsStringAsync();
+                var regex = new Regex("[a-z]+[a-z0-9]*@[a-z0-9]+\\.[a-z]+", RegexOptions.IgnoreCase);
+                MatchCollection matches = regex.Matches(html);
+
+                foreach (var m in matches) {
+                    Console.WriteLine(m.ToString());
+                }
+
+            }
+
+            
         }
     }
 }
